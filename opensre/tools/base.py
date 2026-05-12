@@ -89,29 +89,6 @@ class BaseTool(ABC):
         except ValueError as exc:
             logger.warning("Parameter error in tool '%s': %s", self.my_tool_name, exc)
             return ToolResult.fail(str(exc))
-        except Exception as exc:  # pylint: disable=broad-except
-            logger.exception("Unexpected error in tool '%s'", self.my_tool_name)
+        except Exception as exc:  # noqa: BLE001  # catch-all so one bad tool can't crash the caller
+            logger.exception("Unexpected error in tool '%s': %s", self.my_tool_name, exc)
             return ToolResult.fail(f"Unexpected error: {exc}")
-
-
-# ---------------------------------------------------------------------------
-# Registry helpers
-# ---------------------------------------------------------------------------
-
-_TOOL_REGISTRY: Dict[str, BaseTool] = {}
-
-
-def register_tool(tool: BaseTool) -> None:
-    """Register a tool instance so it can be looked up by name."""
-    _TOOL_REGISTRY[tool.my_tool_name] = tool
-    logger.debug("Registered tool: %s", tool.my_tool_name)
-
-
-def get_tool(name: str) -> Optional[BaseTool]:
-    """Return the registered tool with *name*, or None if not found."""
-    return _TOOL_REGISTRY.get(name)
-
-
-def list_tools() -> List[str]:
-    """Return the names of all registered tools."""
-    return list(_TOOL_REGISTRY.keys())
