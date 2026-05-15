@@ -90,6 +90,6 @@ class BaseTool(ABC):
             logger.warning("Parameter error in tool '%s': %s", self.my_tool_name, exc)
             return ToolResult.fail(str(exc))
         except Exception as exc:  # noqa: BLE001
-            # Catch-all so a buggy tool never crashes the caller
+            # Catch-all so a buggy tool never crashes the calling process
             logger.exception("Unexpected error in tool '%s': %s", self.my_tool_name, exc)
             return ToolResult.fail(f"Unexpected error: {exc}")
